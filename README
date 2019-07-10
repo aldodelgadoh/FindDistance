@@ -1,0 +1,42 @@
+import googlemaps
+import pandas as pd
+import os
+from datetime import datetime
+
+def finddist(source, destination):
+    gmaps = googlemaps.Client(key='AIzaSyDknAEBGmaFolIhZbJ8hL217afl9MVBhCo',timeout=None)
+    now = datetime.now()
+    try:
+        directions_result = gmaps.directions(source,destination, mode="driving",departure_time=now)
+        x=directions_result[0]["legs"][0]["distance"]["value"]
+    except IndexError:
+        try:
+            returnedPlaces = gmaps.places_radar(source, radius=20000,type="route")
+            alternativa=returnedPlaces["results"][0]["geometry"]["location"]
+            lat=str(alternativa["lat"])
+            long=str(alternativa["lng"])
+            alt=lat+","+long
+            directions_result = gmaps.directions(alt, destination, mode="driving",departure_time=now)
+            x=directions_result[0]["legs"][0]["distance"]["value"]
+        except IndexError:
+            x="."
+    return x
+
+def findtime(source, destination):
+    gmaps = googlemaps.Client(key='AIzaSyDknAEBGmaFolIhZbJ8hL217afl9MVBhCo',timeout=None)
+    now = datetime.now()
+    try:
+        directions_result = gmaps.directions(source,destination, mode="driving",departure_time=now)
+        x=directions_result[0]["legs"][0]["duration"]["value"]
+    except IndexError:
+        try:
+            returnedPlaces = gmaps.places_radar(source, radius=20000,type="route")
+            alternativa=returnedPlaces["results"][0]["geometry"]["location"]
+            lat=str(alternativa["lat"])
+            long=str(alternativa["lng"])
+            alt=lat+","+long
+            directions_result = gmaps.directions(alt, destination, mode="driving",departure_time=now)
+            x=directions_result[0]["legs"][0]["duration"]["value"]
+        except IndexError:
+            x="."
+    return x
